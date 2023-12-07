@@ -4,41 +4,53 @@ using namespace mlpack;
 using namespace arma;
 
 void readCSV(const std::string& filename, std::vector<int>& labels, std::vector<std::string>& geneData) {
+    // define input file
     std::ifstream input(filename);
     std::string line{};
+
     if (!input) {
         std::cerr << "Error opening file: " << filename << std::endl;
         return;
     }
+
+    // read input file
     while (input) {
         std::getline(input, line);
         int ind {};
+
+        // remove unwanted characters
         ind = line.find("\r", 0);
         if (ind != std::string::npos) {
             line.erase(ind, 2);
         }
 
-        std::string index, label, sequence, temp;
+
+        std::string index, label, sequence;
 
         std::stringstream lineStr(line);
 
+        // define variables
         std::getline(lineStr, index, ',');
         std::getline(lineStr, label, ',');
         std::getline(lineStr, sequence);
 
+        // add labels to 1d array and sequences to 2d array
         labels.push_back(std::stoi(label));
         geneData.push_back(sequence);
     }
 }
 
 std::vector<std::vector<int>> processSequences(std::vector<std::string>& geneData) {
+    // create a mapping of DNA chars to ints for ML application
     std::unordered_map<char, int> charMap;
     std::vector<std::vector<int>> encodedGenes;
 
+    // encode dna nucleotides as numerical labels
     double i = 1;
     for (std::string& sequence : geneData) {
         std::vector<int> encodedSequence;
         for (char c : sequence) {
+            // if char not in current map
             if (charMap.find(c) == charMap.end()) {
                 charMap[c] = i++;
             }
@@ -50,6 +62,7 @@ std::vector<std::vector<int>> processSequences(std::vector<std::string>& geneDat
 }
 
 void runClassifier(const std::string& filename) {
+    // create containers for labels and genetic data
     std::vector<int> oldLabels;
     std::vector<std::string> geneData;
 
