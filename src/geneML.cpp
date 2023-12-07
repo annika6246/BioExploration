@@ -46,7 +46,7 @@ std::vector<std::vector<int>> processSequences(std::vector<std::string>& geneDat
     std::vector<std::vector<int>> encodedGenes;
 
     // encode dna nucleotides as numerical labels
-    double i = 1;
+    int i = 1;
     for (std::string& sequence : geneData) {
         std::vector<int> encodedSequence;
         for (char c : sequence) {
