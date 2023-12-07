@@ -92,6 +92,7 @@ void runClassifier(const std::string& filename) {
 //    std::vector<size_t> numTreesValues = {10, 20, 50};
 //    std::tie(numTrees, maxDepth) = hpt.Optimize(numTreesValues, maxDepthValues);
 
+    // compute cross validated accuracy
     const size_t k = 10;
     KFoldCV<RandomForest<GiniGain, RandomDimensionSelect>, Accuracy> cv(k, dataset, labels, numClasses);
     double cvAccuracy = cv.Evaluate(numTrees, minimumLeafSize, minimumGainSplit, maxDepth);
@@ -113,6 +114,7 @@ void runClassifier(const std::string& filename) {
         evaluations.close();
     }
 
+    // build output confusion matrix, export for visualization
     Mat<size_t> output;
     data::ConfusionMatrix(testY, predictions, output, numClasses);
     output.save("output_files/confusion_matrix.csv", csv_ascii);
